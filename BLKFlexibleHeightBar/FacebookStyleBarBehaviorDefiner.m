@@ -151,17 +151,18 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [super scrollViewDidScroll:scrollView];
-    
     if(!self.isCurrentlySnapping)
     {
-        CGFloat deltaYOffset = scrollView.contentOffset.y - self.previousYOffset;
-        CGFloat deltaProgress = deltaYOffset / (self.flexibleHeightBar.maximumBarHeight-self.flexibleHeightBar.minimumBarHeight);
-        
-        self.flexibleHeightBar.progress = self.previousProgress + deltaProgress;
-        
-        [self.flexibleHeightBar setNeedsLayout];
+        CGFloat scrollPosition = scrollView.contentOffset.y + scrollView.bounds.size.height;
+        if (scrollPosition < scrollView.contentSize.height - 1) {
+            self.flexibleHeightBar.progress = scrollView.contentOffset.y / self.flexibleHeightBar.maximumBarHeight; //self.previousProgress + deltaProgress;
+            [self.flexibleHeightBar setNeedsLayout];
+        }
     }
+}
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    [self.flexibleHeightBar setNeedsLayout];
 }
 
 
